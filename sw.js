@@ -1,4 +1,4 @@
-const CACHE_NAME = 'salon-brigida-pos-v10-4-finance-dashboard-1';
+const CACHE_NAME = 'salon-brigida-pos-v10-4-finance-dashboard-2';
 const APP_SHELL = [
   './',
   './index.html',

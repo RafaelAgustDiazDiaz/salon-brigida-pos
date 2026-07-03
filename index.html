@@ -2153,6 +2153,7 @@ body {
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=github-pages-1">
 <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png?v=github-pages-1">
 <link rel="apple-touch-icon" href="icons/icon-192.png?v=github-pages-1">
+  <meta name="salon-brigida-build" content="finance-dashboard-2">
 </head>
 <body>
 <div class="pwa-splash" id="pwaSplash" aria-hidden="true">
@@ -2162,7 +2163,7 @@ body {
     </div>
     <div class="pwa-splash-name">Salón Brígida</div>
     <div class="pwa-splash-sub">Punto de Venta</div>
-    <div class="pwa-version-pill">v10.4 PWA</div>
+    <div class="pwa-version-pill">v10.4 Finanzas</div>
   </div>
 </div>
 <div class="app">
@@ -2230,7 +2231,7 @@ body {
     <button class="sb-dark-btn" id="themeBtn">🌙 Modo oscuro</button>
     <div class="pwa-actions">
       <button class="pwa-install-btn" id="pwaInstallBtn">Instalar app</button>
-      <div class="pwa-version-line">v10.4 PWA</div>
+      <div class="pwa-version-line">v10.4 Finanzas</div>
     </div>
   </div>
 </aside>
@@ -5097,7 +5098,7 @@ showPage(location.hash.slice(1)||'turnero',{skipHash:true});
   const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   const refreshInstallState = () => {
     const standalone = isStandalone();
-    if (status) status.textContent = standalone ? 'Instalada' : (installPrompt ? 'Lista para instalar' : 'v10.4 PWA');
+    if (status) status.textContent = standalone ? 'Instalada' : (installPrompt ? 'Lista para instalar' : 'v10.4 Finanzas');
     if (installBtn) {
       installBtn.hidden = standalone;
       installBtn.textContent = 'Instalar app';
