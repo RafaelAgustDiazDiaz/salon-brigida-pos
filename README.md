@@ -40,3 +40,8 @@ En el cobro, selecciona `Mixto` para dividir una factura entre efectivo, tarjeta
 ## GitHub Pages
 
 El paquete está preparado para publicarse en GitHub Pages. Revisa `GITHUB_PAGES.md` para los pasos.
+
+
+## Seguridad y autosync
+
+Revisa `AUTH_SECURITY.md`. La app incluye login de Supabase y sincronización automática por defecto.

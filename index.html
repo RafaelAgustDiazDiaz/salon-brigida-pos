@@ -2115,6 +2115,10 @@ body {
 .mixed-pay-grid .cash-input { font-size: 14px; padding: 9px 8px; }
 @media (max-width: 640px) { .mixed-pay-grid { grid-template-columns: 1fr; } }
 
+
+.cloud-session { padding: 9px 11px; border-radius: var(--r-sm); border: 1px dashed var(--border-strong); color: var(--text-3); font-size: 12px; font-weight: 700; }
+.cloud-session.ok { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
+
 </style>
 
 <meta name="theme-color" content="#D1507A">
@@ -2646,15 +2650,36 @@ body {
       <div class="field"><label>Project URL</label><input type="url" id="sbUrl" placeholder="https://tu-proyecto.supabase.co"></div>
       <div class="field"><label>Anon public key</label><input type="password" id="sbAnonKey" placeholder="eyJhbGciOi..."></div>
       <label class="cloud-check"><input type="checkbox" id="sbAutoSync"> Sincronizar automáticamente al guardar</label>
-      <div class="cloud-note">La app seguirá trabajando local. Supabase guardará una copia en la nube cuando pulses subir o actives sincronización.</div>
+      <div class="cloud-session" id="cloudSession">Usuario: sin iniciar sesión</div>
+      <div class="cloud-note">La app trabaja local y sube una copia automática a Supabase. Con seguridad activa, inicia sesión antes de subir o bajar datos.</div>
     </div>
     <div class="modal-actions cloud-actions">
+      <button class="m-cancel" id="sbLoginOpenBtn">Login</button>
       <button class="m-cancel" id="sbPullBtn">Bajar nube</button>
       <button class="m-cancel" id="sbPushBtn">Subir ahora</button>
       <button class="m-save" id="sbSaveBtn">Guardar conexión</button>
     </div>
     <div class="modal-actions">
       <button class="m-cancel" data-close="supabaseModal">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="overlay" id="supabaseLoginModal">
+  <div class="modal-box" style="width:390px">
+    <div class="modal-title">Acceso a la nube</div>
+    <div class="cloud-panel">
+      <div class="cloud-status" id="loginStatus">Inicia sesión con el usuario creado en Supabase.</div>
+      <div class="field"><label>Correo</label><input type="email" id="sbLoginEmail" placeholder="usuario@salon.com"></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="sbLoginPassword" placeholder="Contraseña"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="m-cancel" id="sbLogoutBtn">Salir</button>
+      <button class="m-save" id="sbLoginBtn">Entrar</button>
+    </div>
+    <div class="modal-actions">
+      <button class="m-cancel" data-close="supabaseLoginModal">Cerrar</button>
     </div>
   </div>
 </div>
@@ -3670,7 +3695,7 @@ function importData(file){
 /* ── SUPABASE CLOUD SYNC ─────────────────────────────── */
 const SK_SUPABASE = 'salon_brigida_supabase_v1';
 const SUPABASE_CLIENT_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-let sbClient = null, sbSyncT = null, sbSyncing = false;
+let sbClient = null, sbSyncT = null, sbSyncing = false, sbSession = null;
 
 function getSupabaseConfig(){
   try{return JSON.parse(localStorage.getItem(SK_SUPABASE)||'{}');}catch(e){return {};}
@@ -3698,6 +3723,52 @@ async function getSupabaseClient(){
   }
   return sbClient;
 }
+
+async function refreshSupabaseSession(){
+  try{
+    const client=await getSupabaseClient();
+    const {data}=await client.auth.getSession();
+    sbSession=data?.session||null;
+    updateCloudSessionUI();
+    return sbSession;
+  }catch(e){ updateCloudSessionUI(); return null; }
+}
+function updateCloudSessionUI(){
+  const el=$('cloudSession'); if(!el)return;
+  const email=sbSession?.user?.email;
+  el.textContent=email?'Usuario: '+email:'Usuario: sin iniciar sesión';
+  el.className='cloud-session'+(email?' ok':'');
+}
+async function requireSupabaseSession(){
+  const cfg=getSupabaseConfig();
+  if(!cfg.requireLogin) return null;
+  const session=sbSession||await refreshSupabaseSession();
+  if(!session){
+    openModal('supabaseLoginModal');
+    throw new Error('Inicia sesión para usar la nube.');
+  }
+  return session;
+}
+async function loginSupabase(){
+  try{
+    const client=await getSupabaseClient();
+    const email=$('sbLoginEmail').value.trim();
+    const password=$('sbLoginPassword').value;
+    if(!email||!password){$('loginStatus').textContent='Completa correo y contraseña.';return;}
+    $('loginStatus').textContent='Entrando...';
+    const {data,error}=await client.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    sbSession=data.session||null;
+    $('loginStatus').textContent='Sesión iniciada.';
+    updateCloudSessionUI();
+    closeModal('supabaseLoginModal');
+  }catch(e){ $('loginStatus').textContent='Error: '+(e.message||e); }
+}
+async function logoutSupabase(){
+  try{ const client=await getSupabaseClient(); await client.auth.signOut(); }catch(e){}
+  sbSession=null; updateCloudSessionUI(); $('loginStatus').textContent='Sesión cerrada.';
+}
+
 function getAppSnapshot(){
   let invoiceSeq=0, turnSeq=null;
   try{ invoiceSeq=parseInt(localStorage.getItem(SK_INVOICE)||'0')||0; }catch(e){}
@@ -3724,6 +3795,7 @@ async function pushSupabaseNow(silent){
   try{
     if(!silent)setCloudStatus('Subiendo copia a Supabase...', 'warn');
     const client=await getSupabaseClient();
+    await requireSupabaseSession();
     const payload=getAppSnapshot();
     const {error}=await client.from('pos_snapshots').upsert({ id:'main', payload, updated_at:new Date().toISOString() });
     if(error)throw error;
@@ -3737,6 +3809,7 @@ async function pullSupabaseNow(){
   try{
     setCloudStatus('Leyendo copia de Supabase...', 'warn');
     const client=await getSupabaseClient();
+    await requireSupabaseSession();
     const {data,error}=await client.from('pos_snapshots').select('payload,updated_at').eq('id','main').maybeSingle();
     if(error)throw error;
     if(!data){setCloudStatus('No hay copia en Supabase todavía.', 'warn');return;}
@@ -3758,16 +3831,19 @@ function openSupabaseModal(){
   const cfg=getSupabaseConfig();
   $('sbUrl').value=cfg.url||'';
   $('sbAnonKey').value=cfg.anonKey||'';
-  $('sbAutoSync').checked=!!cfg.autoSync;
-  setCloudStatus(cfg.url?'Conexión guardada. Puedes subir o bajar datos.':'Sin conectar', cfg.url?'ok':'');
+  $('sbAutoSync').checked=cfg.autoSync!==false;
+  refreshSupabaseSession();
+  setCloudStatus(cfg.url?'Conexión guardada. Autosync activo por defecto.':'Sin conectar', cfg.url?'ok':'');
   openModal('supabaseModal');
 }
 function saveSupabaseFromModal(){
-  const cfg={ url:$('sbUrl').value.trim(), anonKey:$('sbAnonKey').value.trim(), autoSync:$('sbAutoSync').checked };
+  const cfg={ url:$('sbUrl').value.trim().replace(/\/rest\/v1\/?$/,''), anonKey:$('sbAnonKey').value.trim(), autoSync:$('sbAutoSync').checked, requireLogin:true };
   if(!cfg.url||!cfg.anonKey){alert('Completa la URL y la llave pública.');return;}
   saveSupabaseConfig(cfg);
-  setCloudStatus('Conexión guardada.', 'ok');
+  setCloudStatus('Conexión guardada. Inicia sesión y sube ahora.', 'ok');
+  refreshSupabaseSession();
 }
+
 
 /* ── BACKUP REMINDER ──────────────────────────────────── */
 let backupT=null;
@@ -5069,6 +5145,9 @@ $('cloudBtn').addEventListener('click',openSupabaseModal);
 $('sbSaveBtn').addEventListener('click',saveSupabaseFromModal);
 $('sbPushBtn').addEventListener('click',()=>pushSupabaseNow(false));
 $('sbPullBtn').addEventListener('click',pullSupabaseNow);
+$('sbLoginOpenBtn').addEventListener('click',()=>openModal('supabaseLoginModal'));
+$('sbLoginBtn').addEventListener('click',loginSupabase);
+$('sbLogoutBtn').addEventListener('click',logoutSupabase);
 $('backupNowBtn').addEventListener('click',()=>{exportData();localStorage.setItem('salon_backup_reminded_'+new Date().toDateString(),'1');closeModal('backupModal');});
 $('backupLaterBtn').addEventListener('click',()=>{closeModal('backupModal');scheduleBackup(3600000);});
 
@@ -5077,6 +5156,7 @@ updateClock();setInterval(updateClock,30000);
 loadDB();loadCaja();loadCajaHistorial();updateCajaBadge();
 loadTurns();
 initTheme();checkBackup();
+refreshSupabaseSession();
 // Start on requested page
 showPage(location.hash.slice(1)||'turnero',{skipHash:true});
 

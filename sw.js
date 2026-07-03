@@ -1,4 +1,4 @@
-const CACHE_NAME = 'salon-brigida-pos-v10-4-github-pages-1';
+const CACHE_NAME = 'salon-brigida-pos-v10-4-auth-autosync-1';
 const APP_SHELL = [
   './',
   './index.html',
