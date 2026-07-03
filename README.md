@@ -45,3 +45,8 @@ El paquete está preparado para publicarse en GitHub Pages. Revisa `GITHUB_PAGES
 ## Seguridad y autosync
 
 Revisa `AUTH_SECURITY.md`. La app incluye login de Supabase y sincronización automática por defecto.
+
+
+## Dashboard financiero
+
+El dashboard separa ventas facturadas, cobros reales y saldos pendientes. La caja calcula el efectivo esperado usando cobros reales, no el total facturado.

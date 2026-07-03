@@ -642,10 +642,12 @@ body {
 .total-amt { font-family: var(--font-d); font-size: 24px; font-weight: 600; color: var(--rose-hover); }
 
 /* Pay method chips */
-.pay-methods { display: flex; gap: 5px; margin-bottom: 10px; }
+.pay-methods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-bottom: 10px; }
 .pay-chip {
-  flex: 1; padding: 8px 4px; text-align: center;
+  min-height: 42px; padding: 7px 4px; text-align: center;
+  display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 500; font-family: var(--font-ui);
+  line-height: 1.1; white-space: nowrap;
   color: var(--text-3);
   background: var(--surface-2);
   border: 1px solid var(--border-strong);
@@ -2119,6 +2121,23 @@ body {
 .cloud-session { padding: 9px 11px; border-radius: var(--r-sm); border: 1px dashed var(--border-strong); color: var(--text-3); font-size: 12px; font-weight: 700; }
 .cloud-session.ok { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
 
+
+/* Finance dashboard */
+.finance-breakdown { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
+.finance-mini { padding: 11px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface-2); }
+.finance-mini-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 800; margin-bottom: 5px; }
+.finance-mini-val { font-size: 16px; font-weight: 800; font-family: var(--font-d); }
+.finance-mini-val.green { color: var(--green); }
+.finance-mini-val.red { color: var(--red); }
+.finance-mini-val.rose { color: var(--rose); }
+.due-client-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.due-client-row:last-child { border-bottom: none; }
+.due-client-main { min-width: 0; }
+.due-client-name { font-size: 13px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.due-client-sub { font-size: 11px; color: var(--text-4); margin-top: 2px; }
+.due-client-amt { color: var(--red); font-weight: 900; white-space: nowrap; }
+@media (max-width: 640px) { .finance-breakdown { grid-template-columns: 1fr; } .pay-methods { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 </style>
 
 <meta name="theme-color" content="#D1507A">
@@ -2464,28 +2483,28 @@ body {
       <div class="kpi-card" style="cursor:pointer" onclick="showPage('pos')">
         <div class="kpi-top">
           <div class="kpi-icon" style="background:var(--rose-light)">💰</div>
-          <span class="kpi-trend up" id="dashDeltaToday">hoy</span>
+          <span class="kpi-trend up" id="dashDeltaToday">facturado</span>
         </div>
         <div class="kpi-val" style="color:var(--rose)" id="dashKpiToday">RD$ 0</div>
-        <div class="kpi-lbl">Ventas hoy</div>
+        <div class="kpi-lbl">Ventas facturadas hoy</div>
         <div class="kpi-bar-wrap"><div class="kpi-bar-fill" id="dashBarToday" style="width:0%;background:var(--rose)"></div></div>
       </div>
       <div class="kpi-card" style="cursor:pointer" onclick="showPage('history')">
         <div class="kpi-top">
           <div class="kpi-icon" style="background:var(--blue-bg)">🧾</div>
-          <span class="kpi-trend up" id="dashDeltaTx">transac.</span>
+          <span class="kpi-trend up" id="dashDeltaTx">cobrado</span>
         </div>
         <div class="kpi-val" style="color:var(--blue)" id="dashKpiTx">0</div>
-        <div class="kpi-lbl">Transacciones hoy</div>
+        <div class="kpi-lbl">Cobrado hoy</div>
         <div class="kpi-bar-wrap"><div class="kpi-bar-fill" id="dashBarTx" style="width:0%;background:var(--blue)"></div></div>
       </div>
       <div class="kpi-card" style="cursor:pointer" onclick="showPage('history')">
         <div class="kpi-top">
           <div class="kpi-icon" style="background:var(--green-bg)">📈</div>
-          <span class="kpi-trend up" id="dashDeltaMonth">este mes</span>
+          <span class="kpi-trend warn" id="dashDeltaMonth">pendiente</span>
         </div>
-        <div class="kpi-val" style="color:var(--green)" id="dashKpiMonth">RD$ 0</div>
-        <div class="kpi-lbl">Total del mes</div>
+        <div class="kpi-val" style="color:var(--red)" id="dashKpiMonth">RD$ 0</div>
+        <div class="kpi-lbl">Pendiente por cobrar</div>
         <div class="kpi-bar-wrap"><div class="kpi-bar-fill" id="dashBarMonth" style="width:0%;background:var(--green)"></div></div>
       </div>
       <div class="kpi-card" style="cursor:pointer" onclick="showPage('products')">
@@ -2501,10 +2520,10 @@ body {
     <div class="dash-grid">
       <div class="dash-card">
         <div class="dash-card-hdr">
-          <span class="dash-card-title">Alertas</span>
+          <span class="dash-card-title">Clientes con deuda</span>
           <span class="dash-card-badge" id="dashAlertCount" style="background:var(--red-bg);color:var(--red)"></span>
         </div>
-        <div class="dash-card-body" id="dashAlerts"><div class="dash-empty">Sin alertas activas ✓</div></div>
+        <div class="dash-card-body" id="dashAlerts"><div class="dash-empty">Sin saldos pendientes ✓</div></div>
       </div>
       <div class="dash-card">
         <div class="dash-card-hdr">
@@ -3440,11 +3459,12 @@ function renderClientsPage(){
   $('clientsTableBody').innerHTML=sl.map(c=>{
     const bf=c.bday?parseDateLocal(c.bday).toLocaleDateString('es-DO',{day:'numeric',month:'short'}):'—';
     const it=isBday(c.bday);
+    const debt=clientDebt(c.id);
     return `<tr style="${it?'background:var(--amber-bg)':''}">
       <td>${esc(c.name)}${c.notes?'<span class="note-pill">Nota</span>':''}${it?' 🎂':''}</td>
       <td>${esc(c.phone)}</td><td>${c.cedula?esc(c.cedula):'—'}</td>
       <td style="${it?'color:var(--amber);font-weight:600':''}">${c.bday?'🎂 '+bf:'—'}</td>
-      <td>${c.visits}</td><td class="td-price">${fmt(c.totalSpent||0)}</td>
+      <td>${c.visits}</td><td class="td-price">${fmt(c.totalSpent||0)}${debt>0?`<div style="font-size:10px;color:var(--red);font-weight:800;margin-top:3px">Debe ${fmt(debt)}</div>`:''}</td>
       <td style="text-align:right;white-space:nowrap">
         <button class="tbl-btn tbl-edit view-client" data-id="${escAttr(c.id)}">Ver perfil</button>
         <button class="tbl-btn tbl-edit edit-client" data-id="${escAttr(c.id)}" style="margin-left:4px">Editar</button>
@@ -3579,9 +3599,10 @@ function updateHistStats(){
   const now=new Date();
   const td=db.sales.filter(s=>new Date(s.date).toDateString()===now.toDateString());
   const mo=db.sales.filter(s=>{const d=new Date(s.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
-  $('statToday').textContent=fmt(td.reduce((a,s)=>a+s.total,0));
+  const tdSum=salesFinanceSummary(td), moSum=salesFinanceSummary(mo);
+  $('statToday').textContent=fmt(tdSum.invoiced);
   $('statCount').textContent=td.length;
-  $('statMonth').textContent=fmt(mo.reduce((a,s)=>a+s.total,0));
+  $('statMonth').textContent=fmt(moSum.collected)+' cobrado';
   // Render 7-day spark chart
   const sb=$('sparkBars');
   if(!sb) return;
@@ -3590,7 +3611,8 @@ function updateHistStats(){
   for(let i=6;i>=0;i--){
     const d=new Date(now); d.setDate(d.getDate()-i);
     const ds=d.toDateString();
-    const total=db.sales.filter(s=>new Date(s.date).toDateString()===ds).reduce((a,s)=>a+s.total,0);
+    const daySales=db.sales.filter(s=>new Date(s.date).toDateString()===ds);
+    const total=salesFinanceSummary(daySales).collected;
     days.push({date:d, total, isToday:i===0, lbl:DAY_NAMES[d.getDay()]});
   }
   const maxT=Math.max(1,...days.map(d=>d.total));
@@ -3856,178 +3878,79 @@ function checkBackup(){
   else if(diff>-3600000){localStorage.setItem(tk,'1');openModal('backupModal');}
 }
 
+function salePaymentRows(s){
+  if(Array.isArray(s.payments)&&s.payments.length) return s.payments.map(p=>({method:p.method||s.method,amount:Number(p.amount)||0,date:p.date||s.date}));
+  const paid=salePaidAmount(s);
+  return paid>0?[{method:s.method,amount:paid,date:s.date}]:[];
+}
+function salesFinanceSummary(sales){
+  const invoiced=sales.reduce((a,s)=>a+Number(s.total||0),0);
+  const collected=sales.reduce((a,s)=>a+salePaidAmount(s),0);
+  const pending=sales.reduce((a,s)=>a+saleBalance(s),0);
+  const cash=sales.reduce((a,s)=>a+salePaymentRows(s).filter(p=>p.method==='Efectivo').reduce((x,p)=>x+p.amount,0),0);
+  const card=sales.reduce((a,s)=>a+salePaymentRows(s).filter(p=>p.method==='Tarjeta').reduce((x,p)=>x+p.amount,0),0);
+  const transfer=sales.reduce((a,s)=>a+salePaymentRows(s).filter(p=>p.method==='Transferencia').reduce((x,p)=>x+p.amount,0),0);
+  return {invoiced,collected,pending,cash,card,transfer,count:sales.length};
+}
+function clientDebt(clientId){ return db.sales.filter(s=>s.clientId===clientId).reduce((a,s)=>a+saleBalance(s),0); }
+
 /* ── DASHBOARD ────────────────────────────────────────── */
 function renderDashboard(){
   const now=new Date();
   const todaySales=db.sales.filter(s=>new Date(s.date).toDateString()===now.toDateString());
   const monthSales=db.sales.filter(s=>{const d=new Date(s.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
-  const todayTotal=todaySales.reduce((a,s)=>a+s.total,0);
-  const monthTotal=monthSales.reduce((a,s)=>a+s.total,0);
+  const allSummary=salesFinanceSummary(db.sales);
+  const todaySummary=salesFinanceSummary(todaySales);
+  const monthSummary=salesFinanceSummary(monthSales);
   const lowStock=db.products.filter(p=>p.stock<3);
-
-  // Greeting
   const h=now.getHours();
-  $('dashGreeting').textContent=h<12?'Buenos días ☀':h<18?'Buenas tardes 🌤':h<21?'Buenas noches 🌆':'Buenas noches 🌙';
-  $('dashSubtitle').textContent=now.toLocaleDateString('es-DO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-
-  // ── KPIs with trend vs yesterday ──
-  const yesterday = new Date(now); yesterday.setDate(yesterday.getDate()-1);
-  const ydSales = db.sales.filter(s=>new Date(s.date).toDateString()===yesterday.toDateString());
-  const ydTotal = ydSales.reduce((a,s)=>a+s.total,0);
-  const ydCount = ydSales.length;
-
-  function trendBadge(cur,prev,fmtFn){
-    if(!prev) return {cls:'flat',txt:'Sin referencia'};
-    const pct=Math.round((cur-prev)/prev*100);
-    if(Math.abs(pct)<2) return {cls:'flat',txt:'≈ igual que ayer'};
-    return pct>0?{cls:'up',txt:'↑ '+pct+'% vs ayer'}:{cls:'down',txt:'↓ '+Math.abs(pct)+'% vs ayer'};
-  }
-  function setBar(id,pct){ const el=$(id); if(el) el.style.width=Math.min(100,Math.max(0,pct))+'%'; }
-
-  $('dashKpiToday').textContent=fmt(todayTotal);
-  const t1=trendBadge(todayTotal,ydTotal);
-  $('dashDeltaToday').textContent=t1.txt; $('dashDeltaToday').className='kpi-trend '+t1.cls;
-  // Bar: today vs best day this month
-  const dayTotals={}; monthSales.forEach(s=>{const d=new Date(s.date).toDateString();dayTotals[d]=(dayTotals[d]||0)+s.total;});
-  const maxDay=Math.max(1,...Object.values(dayTotals));
-  setBar('dashBarToday', todayTotal/maxDay*100);
-
-  $('dashKpiTx').textContent=todaySales.length;
-  const t2=trendBadge(todaySales.length,ydCount);
-  $('dashDeltaTx').textContent=t2.txt; $('dashDeltaTx').className='kpi-trend '+t2.cls;
-  setBar('dashBarTx', Math.min(100, todaySales.length/Math.max(1,ydCount||5)*80));
-
-  $('dashKpiMonth').textContent=fmt(monthTotal);
-  // Month bar: progress toward 30-day projection from last month
-  const lastMonthStart=new Date(now.getFullYear(),now.getMonth()-1,1);
-  const lastMonthEnd=new Date(now.getFullYear(),now.getMonth(),0);
-  const lastMonthTotal=db.sales.filter(s=>{const d=new Date(s.date);return d>=lastMonthStart&&d<=lastMonthEnd;}).reduce((a,s)=>a+s.total,0);
-  const t3=trendBadge(monthTotal,lastMonthTotal);
-  $('dashDeltaMonth').textContent=t3.txt; $('dashDeltaMonth').className='kpi-trend '+t3.cls;
-  setBar('dashBarMonth', lastMonthTotal>0?Math.min(100,monthTotal/lastMonthTotal*100):50);
-
+  $('dashGreeting').textContent=h<12?'Buenos días':h<18?'Buenas tardes':'Buenas noches';
+  $('dashSubtitle').textContent='Finanzas reales · '+now.toLocaleDateString('es-DO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  $('dashKpiToday').textContent=fmt(todaySummary.invoiced);
+  $('dashDeltaToday').textContent=todaySummary.count+' factura'+(todaySummary.count!==1?'s':'');
+  $('dashDeltaToday').className='kpi-trend flat';
+  $('dashKpiTx').textContent=fmt(todaySummary.collected);
+  $('dashDeltaTx').textContent='Efectivo '+fmt(todaySummary.cash)+' · Transf. '+fmt(todaySummary.transfer);
+  $('dashDeltaTx').className='kpi-trend up';
+  $('dashKpiMonth').textContent=fmt(allSummary.pending);
+  $('dashDeltaMonth').textContent=allSummary.pending>0?'Por cobrar':'Sin deuda';
+  $('dashDeltaMonth').className='kpi-trend '+(allSummary.pending>0?'warn':'up');
   $('dashKpiStock').textContent=lowStock.length;
   $('dashDeltaStock').textContent=lowStock.length>0?lowStock.length+' requieren atención':'✓ Todo en orden';
   $('dashDeltaStock').className='kpi-trend '+(lowStock.length>0?'warn':'up');
-  setBar('dashBarStock', lowStock.length>0?Math.min(100,lowStock.length/Math.max(1,db.products.length)*100*3):0);
-
-  // Alerts
-  const alerts=[];
-  lowStock.forEach(p=>{
-    const sev=p.stock===0?'red':'amber';
-    const txt=p.stock===0?'Sin stock':'Stock bajo ('+p.stock+' unid.)';
-    alerts.push({sev,text:`<strong>${esc(p.name)}</strong> — ${txt}`,tag:p.stock===0?'Agotado':'Bajo'});
-  });
-  // Inactive clients (>30 days)
-  db.clients.forEach(c=>{
-    const lastSale=db.sales.filter(s=>s.clientId===c.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
-    if(lastSale){
-      const days=Math.floor((now-new Date(lastSale.date))/(1000*60*60*24));
-      if(days>=30) alerts.push({sev:'blue',text:`<strong>${esc(c.name)}</strong> — sin visita hace ${days} días`,tag:'Inactiva'});
-    }
-  });
-  // Birthdays today alert — use same date-only approach
-  db.clients.forEach(c=>{
-    if(!c.bday)return;
-    const d=parseDateLocal(c.bday);
-    const todayM=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    const bdayThisYear=new Date(now.getFullYear(),d.getMonth(),d.getDate());
-    if(bdayThisYear.getTime()===todayM.getTime())
-      alerts.push({sev:'amber',text:`<strong>${esc(c.name)}</strong> — cumpleaños hoy 🎂`,tag:'Hoy'});
-  });
-
-  const alertEl=$('dashAlerts');
-  const tagColors={red:'background:var(--red-bg);color:var(--red)',amber:'background:var(--amber-bg);color:var(--amber)',blue:'background:var(--blue-bg);color:var(--blue)',green:'background:var(--green-bg);color:var(--green)'};
-  if(alerts.length){
-    alertEl.innerHTML=alerts.map(a=>`<div class="alert-row"><div class="alert-dot ${a.sev}"></div><div class="alert-text">${a.text}<span class="alert-tag" style="${tagColors[a.sev]}">${a.tag}</span></div></div>`).join('');
-    $('dashAlertCount').textContent=alerts.length;
+  const maxK=Math.max(1,todaySummary.invoiced,todaySummary.collected,allSummary.pending,lowStock.length*1000);
+  const setBar=(id,val)=>{const el=$(id); if(el) el.style.width=Math.min(100,Math.max(0,val/maxK*100))+'%';};
+  setBar('dashBarToday',todaySummary.invoiced);
+  setBar('dashBarTx',todaySummary.collected);
+  setBar('dashBarMonth',allSummary.pending);
+  setBar('dashBarStock',lowStock.length*1000);
+  const debtors=db.clients.map(c=>({client:c,debt:clientDebt(c.id),last:db.sales.filter(s=>s.clientId===c.id&&saleBalance(s)>0).sort((a,b)=>new Date(b.date)-new Date(a.date))[0]})).filter(x=>x.debt>0).sort((a,b)=>b.debt-a.debt);
+  const debtEl=$('dashAlerts');
+  if(debtors.length){
+    debtEl.innerHTML=debtors.slice(0,8).map(({client,debt,last})=>`<div class="due-client-row"><div class="due-client-main"><div class="due-client-name">${esc(client.name)}</div><div class="due-client-sub">${esc(client.phone||'')} · Fac. #${last?String(last.invoiceNum||last.id).padStart(6,'0'):'pendiente'}</div></div><div class="due-client-amt">${fmt(debt)}</div></div>`).join('');
+    $('dashAlertCount').textContent=debtors.length;
     $('dashAlertCount').style.display='';
   } else {
-    alertEl.innerHTML='<div class="dash-empty">Sin alertas activas ✓</div>';
+    debtEl.innerHTML='<div class="dash-empty">Sin saldos pendientes ✓</div>';
     $('dashAlertCount').style.display='none';
   }
-  // Update sidebar badge
   const nb=$('dashAlertBadge');
-  if(alerts.length>0){nb.style.display='';nb.textContent=alerts.length;}else nb.style.display='none';
-
-  // Birthdays this week — compare date-only (no time component)
+  if(debtors.length>0){nb.style.display='';nb.textContent=debtors.length;}else nb.style.display='none';
   const bdayEl=$('dashBdays');
   const todayMidnight=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  const weekBdays=db.clients.filter(c=>{
-    if(!c.bday)return false;
-    const d=parseDateLocal(c.bday);
-    // Normalize to this year, midnight
-    const thisYear=new Date(now.getFullYear(),d.getMonth(),d.getDate());
-    // If already passed this year (more than 0 days ago), check next year wrap
-    const diffDays=Math.round((thisYear-todayMidnight)/(1000*60*60*24));
-    return diffDays>=0&&diffDays<=7;
-  }).sort((a,b)=>{
-    const da=parseDateLocal(a.bday),db2=parseDateLocal(b.bday);
-    return new Date(now.getFullYear(),da.getMonth(),da.getDate())-new Date(now.getFullYear(),db2.getMonth(),db2.getDate());
-  });
+  const weekBdays=db.clients.filter(c=>{ if(!c.bday)return false; const d=parseDateLocal(c.bday); const thisYear=new Date(now.getFullYear(),d.getMonth(),d.getDate()); const diffDays=Math.round((thisYear-todayMidnight)/(1000*60*60*24)); return diffDays>=0&&diffDays<=7; });
   if(weekBdays.length){
-    bdayEl.innerHTML=weekBdays.map(c=>{
-      const d=parseDateLocal(c.bday);
-      const thisYear=new Date(now.getFullYear(),d.getMonth(),d.getDate());
-      const diffDays=Math.round((thisYear-todayMidnight)/(1000*60*60*24));
-      const isToday=diffDays===0;
-      const initials=String(c.name||'').split(' ').map(w=>w[0]).slice(0,2).join('');
-      const dayLabel=isToday?'¡Hoy! 🎂':diffDays===1?'Mañana':`En ${diffDays} días`;
-      return `<div class="bday-week-row">
-        <div class="bday-avatar" style="${isToday?'background:var(--rose)':'background:var(--surface-2);color:var(--text-3)'}">${initials}</div>
-        <div class="bday-info"><div class="bday-name">${esc(c.name)}</div>
-          <div class="bday-date">${d.toLocaleDateString('es-DO',{day:'numeric',month:'long'})}</div></div>
-        <span class="bday-today" style="${isToday?'background:var(--rose-light);color:var(--rose);font-weight:700':'background:var(--amber-bg);color:var(--amber)'}">${dayLabel}</span>
-      </div>`;
-    }).join('');
-    $('dashBdayCount').textContent=weekBdays.length;$('dashBdayCount').style.display='';
-  } else {
-    bdayEl.innerHTML='<div class="dash-empty">Nadie esta semana</div>';
-    $('dashBdayCount').style.display='none';
-  }
-
-  // Top services this month
-  const svcCount={};
-  monthSales.forEach(s=>s.items.filter(i=>i.type==='service').forEach(i=>{
-    svcCount[i.name]=(svcCount[i.name]||0)+i.qty;
-  }));
-  const topSvc=Object.entries(svcCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    bdayEl.innerHTML=weekBdays.map(c=>{ const d=parseDateLocal(c.bday); const thisYear=new Date(now.getFullYear(),d.getMonth(),d.getDate()); const diffDays=Math.round((thisYear-todayMidnight)/(1000*60*60*24)); const initials=String(c.name||'').split(' ').map(w=>w[0]).slice(0,2).join(''); return `<div class="bday-week-row"><div class="bday-avatar">${initials}</div><div class="bday-info"><div class="bday-name">${esc(c.name)}</div><div class="bday-date">${d.toLocaleDateString('es-DO',{day:'numeric',month:'long'})}</div></div><span class="bday-today">${diffDays===0?'Hoy':'En '+diffDays+' días'}</span></div>`; }).join('');
+    $('dashBdayCount').textContent=weekBdays.length; $('dashBdayCount').style.display='';
+  } else { bdayEl.innerHTML='<div class="dash-empty">Nadie esta semana</div>'; $('dashBdayCount').style.display='none'; }
+  const svcMap={}; monthSales.forEach(s=>s.items.filter(i=>i.type==='service').forEach(i=>{svcMap[i.name]=(svcMap[i.name]||0)+i.qty;}));
+  const topSvc=Object.entries(svcMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const topEl=$('dashTopSvc');
-  if(topSvc.length){
-    const max=topSvc[0][1];
-    topEl.innerHTML=topSvc.map(([name,count])=>`
-      <div class="svc-bar-row">
-        <span class="svc-bar-name">${esc(name)}</span>
-        <div class="svc-bar-track"><div class="svc-bar-fill" style="width:${Math.round(count/max*100)}%"></div></div>
-        <span class="svc-bar-count">${count}</span>
-      </div>`).join('');
-  } else topEl.innerHTML='<div class="dash-empty">Sin ventas este mes</div>';
-
-  // Inactive clients
+  if(topSvc.length){ const max=topSvc[0][1]; topEl.innerHTML=topSvc.map(([name,count])=>`<div class="profile-fav-svc"><span class="pfv-name">${esc(name)}</span><div class="pfv-track"><div class="pfv-fill" style="width:${Math.round(count/max*100)}%"></div></div><span class="pfv-count">${count}×</span></div>`).join(''); }
+  else topEl.innerHTML='<div class="dash-empty">Sin ventas este mes</div>';
   const inactiveEl=$('dashInactive');
-  const inactive=db.clients.map(c=>{
-    const lastSale=db.sales.filter(s=>s.clientId===c.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
-    if(!lastSale)return null;
-    const days=Math.floor((now-new Date(lastSale.date))/(1000*60*60*24));
-    return days>=30?{c,days}:null;
-  }).filter(Boolean).sort((a,b)=>b.days-a.days).slice(0,5);
-  if(inactive.length){
-    inactiveEl.innerHTML=inactive.map(({c,days})=>{
-      const initials=String(c.name||'').split(' ').map(w=>w[0]).slice(0,2).join('');
-      const sev=days>=60?'var(--red)':days>=45?'var(--amber)':'var(--blue)';
-      const sevBg=days>=60?'var(--red-bg)':days>=45?'var(--amber-bg)':'var(--blue-bg)';
-      return `<div class="bday-week-row">
-        <div class="bday-avatar" style="background:var(--surface-2);color:var(--text-3)">${initials}</div>
-        <div class="bday-info"><div class="bday-name">${esc(c.name)}</div>
-          <div class="bday-date">${c.visits} visitas totales</div></div>
-        <span class="bday-today" style="background:${sevBg};color:${sev}">${days}d</span>
-      </div>`;
-    }).join('');
-    $('dashInactiveCount').textContent=inactive.length;$('dashInactiveCount').style.display='';
-  } else {
-    inactiveEl.innerHTML='<div class="dash-empty">Todas activas 🎉</div>';
-    $('dashInactiveCount').style.display='none';
-  }
+  inactiveEl.innerHTML=`<div class="finance-breakdown"><div class="finance-mini"><div class="finance-mini-label">Facturado mes</div><div class="finance-mini-val rose">${fmt(monthSummary.invoiced)}</div></div><div class="finance-mini"><div class="finance-mini-label">Cobrado mes</div><div class="finance-mini-val green">${fmt(monthSummary.collected)}</div></div><div class="finance-mini"><div class="finance-mini-label">Pendiente total</div><div class="finance-mini-val red">${fmt(allSummary.pending)}</div></div></div>`;
+  $('dashInactiveCount').textContent='RD$'; $('dashInactiveCount').style.display='';
 }
 
 /* ── CAJA ─────────────────────────────────────────────── */
@@ -4055,7 +3978,7 @@ function cajaCalc(){
   const changeOut = sales.filter(s=>new Date(s.date)>=opened&&s.method==='Efectivo').reduce((a,s)=>a+(s.change||0),0);
   const movsIn  = (caja.movimientos||[]).filter(m=>m.tipo==='entrada').reduce((a,m)=>a+m.monto,0);
   const movsOut = (caja.movimientos||[]).filter(m=>m.tipo==='salida').reduce((a,m)=>a+m.monto,0);
-  const expected = caja.fondoInicial + cashIn - changeOut + movsIn - movsOut;
+  const expected = caja.fondoInicial + cashIn + movsIn - movsOut;
   const totalAll = sales.filter(s=>new Date(s.date)>=opened).reduce((a,s)=>a+s.total,0);
   const txCard   = payRows.filter(p=>p.method==='Tarjeta').reduce((a,p)=>a+p.amount,0);
   const txTrans  = payRows.filter(p=>p.method==='Transferencia').reduce((a,p)=>a+p.amount,0);
@@ -4110,8 +4033,8 @@ function renderCajaTurno(){
       </div>
       <div class="caja-summary-body">
         <div class="caja-line"><span class="caja-line-lbl">Fondo inicial</span><span class="caja-line-val">${fmt(caja.fondoInicial)}</span></div>
-        <div class="caja-line"><span class="caja-line-lbl">Ventas en efectivo (${txEfec} transac.)</span><span class="caja-line-val green">+ ${fmt(cashIn)}</span></div>
-        <div class="caja-line"><span class="caja-line-lbl">Cambio entregado</span><span class="caja-line-val red">− ${fmt(changeOut)}</span></div>
+        <div class="caja-line"><span class="caja-line-lbl">Cobrado en efectivo (${txEfec} pagos)</span><span class="caja-line-val green">+ ${fmt(cashIn)}</span></div>
+        <div class="caja-line"><span class="caja-line-lbl">Cambio entregado (informativo)</span><span class="caja-line-val red">− ${fmt(changeOut)}</span></div>
         ${movsIn>0?`<div class="caja-line"><span class="caja-line-lbl">Entradas manuales</span><span class="caja-line-val green">+ ${fmt(movsIn)}</span></div>`:''}
         ${movsOut>0?`<div class="caja-line"><span class="caja-line-lbl">Salidas manuales</span><span class="caja-line-val red">− ${fmt(movsOut)}</span></div>`:''}
         <div class="caja-line caja-total-line"><span class="caja-line-lbl">Efectivo esperado en caja</span><span class="caja-line-val green">${fmt(expected)}</span></div>
@@ -4318,7 +4241,7 @@ function printCierre(data){
     <div class="r-b" style="font-size:11px;margin:4px 0">EFECTIVO EN CAJA</div>
     <div class="r-row"><span>Fondo inicial</span><span>${caja?fmt(caja.fondoInicial):'—'}</span></div>
     <div class="r-row"><span>+ Ventas efectivo</span><span>${fmt(cashIn)}</span></div>
-    <div class="r-row"><span>- Cambio entregado</span><span>${fmt(changeOut)}</span></div>
+    <div class="r-row"><span>- Cambio entregado (informativo)</span><span>${fmt(changeOut)}</span></div>
     ${movsIn>0?`<div class="r-row"><span>+ Entradas manuales</span><span>${fmt(movsIn)}</span></div>`:''}
     ${movsOut>0?`<div class="r-row"><span>- Salidas manuales</span><span>${fmt(movsOut)}</span></div>`:''}
     <div class="r-tot"><span>Esperado en caja</span><span>${fmt(expected)}</span></div>
