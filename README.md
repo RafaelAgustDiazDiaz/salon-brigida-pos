@@ -1,52 +1,42 @@
-# Salón Brígida POS - PWA v10.4
+# Salon Brigida POS - PWA v10.21
 
-Carpeta instalable de la app.
+App instalable de punto de venta para Salon Brigida.
 
 ## Probar localmente
 
 1. Abre esta carpeta en una terminal.
-2. Ejecuta: python -m http.server 4173
-3. Abre: http://localhost:4173
-4. Usa el botón Instalar app o el menú del navegador.
-
-## Datos
-
-La PWA guarda los datos en el navegador bajo el origen donde se abre. Si venías usando el HTML directo, exporta los datos allí e impórtalos en esta versión.
+2. Ejecuta: `python -m http.server 4173`
+3. Abre: `http://localhost:4173`
+4. Usa el boton `Instalar app` o el menu del navegador.
 
 ## Archivos principales
 
-- index.html: app completa.
-- manifest.webmanifest: datos de instalación.
-- sw.js: modo sin conexión.
-- icons/: iconos e imágenes de instalación.
+- `index.html`: app completa.
+- `manifest.webmanifest`: datos de instalacion.
+- `sw.js`: modo sin conexion y cache.
+- `icons/`: iconos e imagenes de instalacion.
+- `supabase/schema.sql`: tablas para la base de datos.
 
+## Datos y nube
 
-## Supabase
+La app guarda datos localmente en el navegador y tambien puede sincronizar con Supabase.
 
-La app incluye una primera integración de nube. En Supabase, ejecuta `supabase/schema.sql`, luego abre `Nube` dentro de la app y pega el Project URL y la anon public key.
+Para activar Supabase:
 
+1. En Supabase abre `SQL Editor`.
+2. Pega el contenido de `supabase/schema.sql`.
+3. Pulsa `Run`.
+4. En la app abre `Nube`.
+5. Pega `Project URL` y `anon public key`.
+6. Inicia sesion con el usuario creado en Supabase.
+7. Pulsa `Subir ahora`.
 
+## Tablas de Supabase
 
-## Pagos parciales
+El SQL crea tablas para clientes, productos, servicios, ventas, pagos, abonos, turnos, caja y cuentas por cobrar.
 
-Si una clienta no paga el total, escribe el monto recibido en efectivo antes de cobrar. La venta quedará con saldo pendiente y en Historial aparecerá el botón `Abonar` para registrar pagos posteriores.
-
-
-## Pagos mixtos
-
-En el cobro, selecciona `Mixto` para dividir una factura entre efectivo, tarjeta y transferencia. Si la suma no completa el total, queda saldo pendiente y luego se puede registrar desde Historial con `Abonar`.
-
+La vista `pos_accounts_receivable` permite consultar clientes con saldo pendiente.
 
 ## GitHub Pages
 
-El paquete está preparado para publicarse en GitHub Pages. Revisa `GITHUB_PAGES.md` para los pasos.
-
-
-## Seguridad y autosync
-
-Revisa `AUTH_SECURITY.md`. La app incluye login de Supabase y sincronización automática por defecto.
-
-
-## Dashboard financiero
-
-El dashboard separa ventas facturadas, cobros reales y saldos pendientes. La caja calcula el efectivo esperado usando cobros reales, no el total facturado.
+El paquete esta preparado para publicarse en GitHub Pages. Revisa `GITHUB_PAGES.md` para los pasos.
