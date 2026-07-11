@@ -2576,16 +2576,17 @@ body {
 /* Listos: fila estable para muchos turnos terminados */
 .done-turn-row {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-columns: 44px minmax(0, 1fr) 116px;
   align-items: center;
   gap: 12px;
-  min-height: 78px;
+  min-height: 82px;
   padding: 12px;
   border: 1px solid color-mix(in srgb, var(--green-border) 80%, var(--border));
   border-left: 4px solid var(--green);
   border-radius: var(--r-lg);
   background: color-mix(in srgb, var(--surface) 94%, var(--green-bg));
   box-shadow: var(--shadow-xs);
+  overflow: hidden;
 }
 .done-turn-row:hover { box-shadow: var(--shadow-sm); }
 .done-turn-avatar {
@@ -2610,7 +2611,7 @@ body {
 }
 .done-turn-name {
   color: var(--text);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 900;
   line-height: 1.2;
   white-space: nowrap;
@@ -2630,45 +2631,29 @@ body {
   color: var(--text-4);
   font-size: 11px;
   font-weight: 700;
-}
-.done-turn-services {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  min-width: 0;
-}
-.done-turn-pill {
-  max-width: 100%;
-  min-height: 24px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 9px;
-  border: 1px solid var(--green-border);
-  border-radius: 999px;
-  background: var(--green-bg);
-  color: var(--green);
-  font-size: 11px;
-  font-weight: 800;
-}
-.done-turn-pill span:first-child {
-  min-width: 0;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
-.done-turn-pill span:last-child {
-  flex-shrink: 0;
-  opacity: .9;
+.done-turn-services {
+  display: block;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--green);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .done-turn-actions {
   display: flex;
   align-items: center;
   gap: 7px;
+  justify-self: end;
 }
 .done-turn-icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   background: var(--surface);
@@ -2680,14 +2665,15 @@ body {
 }
 .done-turn-icon-btn:hover { border-color: var(--green-border); color: var(--green); }
 .done-turn-cobrar {
+  width: 76px;
   min-height: 38px;
-  padding: 0 16px;
+  padding: 0 8px;
   border: none;
   border-radius: var(--r-sm);
   background: var(--green);
   color: #fff;
   font-family: var(--font-ui);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   display: inline-flex;
   align-items: center;
@@ -2696,6 +2682,7 @@ body {
   cursor: pointer;
   box-shadow: 0 6px 14px rgba(22,163,74,.25);
 }
+.done-turn-cobrar svg { display: none; }
 .done-turn-cobrar:hover { opacity: .92; }
 @media (max-width: 760px) {
   .turn-flow { padding: 4px 12px 20px; gap: 16px; }
@@ -2705,8 +2692,8 @@ body {
   .now-card-actions button { flex: 1; }
   .queue-row { flex-wrap: wrap; }
   .queue-actions { width: 100%; justify-content: flex-end; margin-top: 6px; }
-  .done-turn-row { grid-template-columns: 40px minmax(0, 1fr); }
-  .done-turn-actions { grid-column: 1 / -1; justify-content: flex-end; }
+  .done-turn-row { grid-template-columns: 40px minmax(0, 1fr) 96px; }
+  .done-turn-actions { grid-column: auto; justify-content: flex-end; }
 }
 
 /* ══ CAJA MEJORADA ══════════════════════════════════════ */
@@ -7123,9 +7110,11 @@ function buildTurnCard(t,status){
 }
 
 function buildDoneTurnRow(t, init, total){
-  const svcs=t.services.length
-    ? t.services.map(s=>`<span class="done-turn-pill"><span>${esc(s.name)}</span><span>${fmt(s.price)}</span></span>`).join('')
-    : '<span class="done-turn-time">Sin servicios — agrega uno</span>';
+  const svcCount=t.services.length;
+  const firstSvc=svcCount?String(t.services[0].name||'Servicio'):'Sin servicios';
+  const svcSummary=svcCount>1
+    ? `${firstSvc} + ${svcCount-1} más · ${fmt(total)}`
+    : `${firstSvc} · ${fmt(total)}`;
   return `<div class="done-turn-row status-done" data-turnid="${t.id}">
     <div class="done-turn-avatar">${init}</div>
     <div class="done-turn-main">
@@ -7133,8 +7122,8 @@ function buildDoneTurnRow(t, init, total){
         <div class="done-turn-name">${esc(t.name)}</div>
         ${t.num?`<span class="done-turn-num">#${t.num}</span>`:''}
       </div>
-      <div class="done-turn-time">${_doneLabel(t)} · Total ${fmt(total)}</div>
-      <div class="done-turn-services">${svcs}</div>
+      <div class="done-turn-time">${_doneLabel(t)}</div>
+      <div class="done-turn-services">${esc(svcSummary)}</div>
     </div>
     <div class="done-turn-actions">
       <button class="done-turn-icon-btn" data-action="print" data-turnid="${t.id}" title="Imprimir"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
