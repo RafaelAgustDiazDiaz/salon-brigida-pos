@@ -3854,7 +3854,7 @@ body {
       </div>
       <div class="search-strip">
         <div class="input-icon-wrap">
-          <input class="search-input" type="text" id="barcodeInput" placeholder="Buscar o escanear código de barras...">
+          <input class="search-input" type="text" id="barcodeInput" placeholder="Buscar o escanear código de barras..." autocomplete="off">
           <span class="ii"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
         </div>
         <button class="scan-btn" id="barcodeFocusBtn"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
@@ -3872,7 +3872,7 @@ body {
         <div class="cz-wrap">
           <div class="cz-search-row">
             <div class="input-icon-wrap" style="flex:1">
-              <input class="cz-input" type="text" id="clientSearchInput" placeholder="Celular, cédula o nombre..." style="width:100%">
+              <input class="cz-input" type="text" id="clientSearchInput" placeholder="Celular, cédula o nombre..." style="width:100%" autocomplete="off">
               <span class="ii"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
             </div>
             <button class="cz-add-btn" id="newClientPosBtn" title="Nuevo cliente">+</button>
@@ -4024,7 +4024,7 @@ body {
 <!-- Clients -->
 <div class="page" id="page-clients">
   <div class="pg-hdr">
-    <div class="input-icon-wrap"><input type="text" id="clientListSearch" placeholder="Buscar por nombre, celular o cédula..." style="width:100%"><span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
+    <div class="input-icon-wrap"><input type="text" id="clientListSearch" placeholder="Buscar por nombre, celular o cédula..." style="width:100%" autocomplete="off"><span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
     <button class="btn-primary" id="newClientPageBtn">+ Nuevo cliente</button>
   </div>
   <div class="filter-bar">
@@ -4046,7 +4046,7 @@ body {
 <!-- Products -->
 <div class="page" id="page-products">
   <div class="pg-hdr">
-    <div class="input-icon-wrap"><input type="text" id="productListSearch" placeholder="Buscar por nombre o código de barras..." style="width:100%"><span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
+    <div class="input-icon-wrap"><input type="text" id="productListSearch" placeholder="Buscar por nombre o código de barras..." style="width:100%" autocomplete="off"><span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
     <button class="btn-secondary" id="newProductBtn">+ Nuevo producto</button>
   </div>
   <div class="filter-bar">
@@ -4065,7 +4065,7 @@ body {
 <!-- Services -->
 <div class="page" id="page-services">
   <div class="pg-hdr">
-    <div class="input-icon-wrap"><input type="text" id="serviceListSearch" placeholder="Buscar servicio..." style="width:100%"><span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
+    <div class="input-icon-wrap"><input type="text" id="serviceListSearch" placeholder="Buscar servicio..." style="width:100%" autocomplete="off"><span class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span></div>
     <button class="btn-primary" id="newServiceBtn">+ Nuevo servicio</button>
   </div>
   <div class="filter-bar">
@@ -4085,7 +4085,7 @@ body {
 <div class="page" id="page-history">
   <div class="pg-hdr" style="flex-wrap:wrap;gap:7px">
     <select class="hist-filter-sel" id="histFilter"><option value="all">Todo el historial</option><option value="today">Hoy</option><option value="week">Esta semana</option><option value="month">Este mes</option></select>
-    <input type="text" id="histSearchClient" style="flex:1;min-width:130px;padding:8px 12px;font-size:12px;font-family:var(--font-ui);background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--r-md);color:var(--text);outline:none" placeholder="Buscar por cliente...">
+    <input type="text" id="histSearchClient" style="flex:1;min-width:130px;padding:8px 12px;font-size:12px;font-family:var(--font-ui);background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--r-md);color:var(--text);outline:none" placeholder="Buscar por cliente..." autocomplete="off">
     <select class="hist-filter-sel" id="histFilterMethod"><option value="all">Todos los métodos</option><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option></select>
     <select class="hist-filter-sel" id="histFilterNails"><option value="all">Todas las ventas</option><option value="nails">Solo con uñas 💅</option><option value="nonails">Sin uñas</option></select>
   </div>
@@ -4127,7 +4127,7 @@ body {
     </div>
     <div class="rectab-body active" id="rectab-pending">
       <div class="receivables-tools">
-        <input type="text" id="receivablesSearch" placeholder="Buscar cliente, teléfono o factura...">
+        <input type="text" id="receivablesSearch" placeholder="Buscar cliente, teléfono o factura..." autocomplete="off">
         <select id="receivablesSort">
           <option value="debt">Mayor deuda</option>
           <option value="oldest">Más antiguas</option>
@@ -4140,7 +4140,7 @@ body {
     </div>
     <div class="rectab-body" id="rectab-history">
       <div class="receivables-tools">
-        <input type="text" id="recvHistSearch" placeholder="Buscar cliente o factura...">
+        <input type="text" id="recvHistSearch" placeholder="Buscar cliente o factura..." autocomplete="off">
         <select id="recvHistMethod">
           <option value="all">Todos los métodos</option>
           <option value="Efectivo">Efectivo</option>
@@ -4364,7 +4364,7 @@ body {
       <div class="cloud-section">
         <div class="cloud-section-kicker">Conexión</div>
         <div class="field"><label>Project URL</label><input type="url" id="sbUrl" placeholder="https://tu-proyecto.supabase.co"></div>
-        <div class="field"><label>Anon public key</label><input type="text" id="sbAnonKey" placeholder="eyJhbGciOi...">
+        <div class="field"><label>Anon public key</label><input type="text" id="sbAnonKey" placeholder="eyJhbGciOi..." autocomplete="off">
           <span class="field-hint">Es la llave pública de tu proyecto — no es secreta, no hace falta ocultarla.</span>
         </div>
         <label class="cloud-check"><input type="checkbox" id="sbAutoSync"> Sincronizar automáticamente al guardar</label>
@@ -4397,16 +4397,18 @@ body {
 <div class="overlay" id="supabaseLoginModal">
   <div class="modal-box" style="width:390px">
     <div class="modal-title">Acceso a la nube</div>
+    <form id="sbLoginForm" autocomplete="on" onsubmit="return false;">
     <div class="cloud-panel">
       <div class="cloud-status" id="loginStatus">Inicia sesión con el usuario creado en Supabase.</div>
-      <div class="field"><label>Correo</label><input type="email" id="sbLoginEmail" placeholder="usuario@salon.com"></div>
-      <div class="field"><label>Contraseña</label><input type="password" id="sbLoginPassword" placeholder="Contraseña"></div>
+      <div class="field"><label>Correo</label><input type="email" id="sbLoginEmail" name="email" autocomplete="username" placeholder="usuario@salon.com"></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="sbLoginPassword" name="password" autocomplete="current-password" placeholder="Contraseña"></div>
       <label class="cloud-check"><input type="checkbox" id="sbRememberLogin"> Recordar en este dispositivo e iniciar sesión automático</label>
     </div>
     <div class="modal-actions">
-      <button class="m-cancel" id="sbLogoutBtn">Salir</button>
-      <button class="m-save" id="sbLoginBtn">Entrar</button>
+      <button type="button" class="m-cancel" id="sbLogoutBtn">Salir</button>
+      <button type="submit" class="m-save" id="sbLoginBtn">Entrar</button>
     </div>
+    </form>
     <div class="modal-actions">
       <button class="m-cancel" data-close="supabaseLoginModal">Cerrar</button>
     </div>
@@ -4416,10 +4418,10 @@ body {
 <div class="overlay" id="clientModal">
   <div class="modal-box">
     <div class="modal-title" id="clientModalTitle">Nuevo cliente</div>
-    <div class="field"><label>Nombre completo *</label><input type="text" id="ncName" placeholder="Ej: María González"></div>
-    <div class="field"><label>Celular *</label><input type="tel" id="ncPhone" placeholder="Ej: 809-555-1234"></div>
-    <div class="field"><label>Cédula</label><input type="text" id="ncCedula" placeholder="Ej: 001-1234567-8"></div>
-    <div class="field"><label>Correo electrónico</label><input type="email" id="ncEmail" placeholder="correo@ejemplo.com"></div>
+    <div class="field"><label>Nombre completo *</label><input type="text" id="ncName" placeholder="Ej: María González" autocomplete="off"></div>
+    <div class="field"><label>Celular *</label><input type="tel" id="ncPhone" placeholder="Ej: 809-555-1234" autocomplete="off"></div>
+    <div class="field"><label>Cédula</label><input type="text" id="ncCedula" placeholder="Ej: 001-1234567-8" autocomplete="off"></div>
+    <div class="field"><label>Correo electrónico</label><input type="email" id="ncEmail" placeholder="correo@ejemplo.com" autocomplete="off"></div>
     <div class="field"><label>Notas / preferencias</label><textarea id="ncNotes" rows="3" placeholder="Alergias, color favorito..." style="width:100%;padding:10px 12px;font-size:13px;font-family:var(--font-ui);background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--r-sm);color:var(--text);outline:none;resize:vertical;transition:border-color var(--t)"></textarea></div>
     <div class="field"><label>Fecha de cumpleaños</label><input type="date" id="ncBday"></div>
     <div class="field"><label>Límite de crédito (RD$)</label><input type="number" id="ncCreditLimit" min="0" step="1" placeholder="0 = sin límite"></div>
@@ -4434,8 +4436,8 @@ body {
 <div class="overlay" id="productModal">
   <div class="modal-box">
     <div class="modal-title" id="productModalTitle">Nuevo producto</div>
-    <div class="field"><label>Nombre *</label><input type="text" id="pmName" placeholder="Ej: Shampoo Pantene 400ml"></div>
-    <div class="field"><label>Código de barras</label><input type="text" id="pmBarcode" placeholder="Ej: 7501234567890"></div>
+    <div class="field"><label>Nombre *</label><input type="text" id="pmName" placeholder="Ej: Shampoo Pantene 400ml" autocomplete="off"></div>
+    <div class="field"><label>Código de barras</label><input type="text" id="pmBarcode" placeholder="Ej: 7501234567890" autocomplete="off"></div>
     <div class="field"><label>Precio (RD$) *</label><input type="number" id="pmPrice" min="0" step="0.01" placeholder="0.00"></div>
     <div class="field"><label>Stock actual</label><input type="number" id="pmStock" min="0" placeholder="0"></div>
     <div class="field"><label>Categoría</label>
@@ -4452,7 +4454,7 @@ body {
 <div class="overlay" id="serviceModal">
   <div class="modal-box">
     <div class="modal-title" id="serviceModalTitle">Nuevo servicio</div>
-    <div class="field"><label>Nombre *</label><input type="text" id="smName" placeholder="Ej: Corte de cabello"></div>
+    <div class="field"><label>Nombre *</label><input type="text" id="smName" placeholder="Ej: Corte de cabello" autocomplete="off"></div>
     <div class="field"><label>Precio (RD$) *</label><input type="number" id="smPrice" min="0" step="0.01" placeholder="0.00"></div>
     <div class="field"><label>Duración (minutos)</label><input type="number" id="smDuration" min="0" placeholder="30"></div>
     <div class="field"><label>Categoría</label>
@@ -4498,6 +4500,14 @@ body {
         <div class="due-modal-kicker">Preferencias</div>
         <div class="due-modal-title">Ajustes</div>
       </div>
+    </div>
+
+    <div class="settings-group-label">Actualización</div>
+    <div class="settings-group">
+      <button type="button" class="settings-row" id="settingsUpdateBtn">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        <span>Buscar la versión más reciente</span>
+      </button>
     </div>
 
     <div class="settings-group-label">Datos</div>
@@ -4565,7 +4575,7 @@ body {
       <label>Nuevo precio</label>
       <input type="number" id="peNewPrice" min="0" step="50" placeholder="0.00">
     </div>
-    <div class="field"><label>Motivo del ajuste</label><input type="text" id="peReason" placeholder="Ej: promoción, corrección, cortesía..."></div>
+    <div class="field"><label>Motivo del ajuste</label><input type="text" id="peReason" placeholder="Ej: promoción, corrección, cortesía..." autocomplete="off"></div>
     <input type="hidden" id="peCartIndex">
     <div class="modal-actions">
       <button class="m-cancel" data-close="priceEditModal">Cancelar</button>
@@ -4611,7 +4621,7 @@ body {
       </div>
       <input type="hidden" id="dueMethod" value="Efectivo">
     </div>
-    <div class="field"><label>Nota</label><input type="text" id="dueNote" placeholder="Ej: abono al regresar"></div>
+    <div class="field"><label>Nota</label><input type="text" id="dueNote" placeholder="Ej: abono al regresar" autocomplete="off"></div>
     <input type="hidden" id="dueSaleId">
     <div class="modal-actions">
       <button class="m-cancel" data-close="paymentModal">Cancelar</button>
@@ -4699,7 +4709,7 @@ body {
   <div class="svc-picker-box">
     <div class="svc-picker-hdr">
       <h3 id="svcPickerTitle">Agregar servicios o productos</h3>
-      <input class="svc-picker-search-input" type="text" id="svcPickerSearch" placeholder="Buscar...">
+      <input class="svc-picker-search-input" type="text" id="svcPickerSearch" placeholder="Buscar..." autocomplete="off">
       <button class="svc-picker-close" id="svcPickerClose">×</button>
     </div>
     <div class="svc-picker-tabs">
@@ -4734,7 +4744,7 @@ body {
         <div style="position:relative">
           <button class="tc-add-svc-btn" id="tmAddSvcBtn" style="width:100%">+ Agregar servicio o producto</button>
           <!-- Old inline picker replaced by svcPickerModal -->
-          <div id="tmSvcPicker" style="display:none"><input type="text" id="tmSvcSearch"><div id="tmSvcPickerList"></div></div>
+          <div id="tmSvcPicker" style="display:none"><input type="text" id="tmSvcSearch" autocomplete="off"><div id="tmSvcPickerList"></div></div>
         </div>
       </div>
       <input type="hidden" id="tmEditId">
@@ -5885,6 +5895,27 @@ function importData(file){
   reader.readAsText(file);$('importFileInput').value='';
 }
 
+async function forceAppUpdate(){
+  const btn=$('settingsUpdateBtn');
+  const lbl=btn?.querySelector('span');
+  const originalText=lbl?lbl.textContent:'';
+  if(lbl) lbl.textContent='Buscando actualización...';
+  if(btn) btn.style.pointerEvents='none';
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      for(const reg of regs){ await reg.unregister(); }
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      for(const key of keys){ await caches.delete(key); }
+    }
+  }catch(e){ console.warn('No se pudo limpiar el caché por completo:', e); }
+  // Recarga forzando bypass de cualquier caché HTTP restante del navegador
+  const url=new URL(window.location.href);
+  url.searchParams.set('_v', Date.now());
+  window.location.replace(url.toString());
+}
 async function clearLocalHistoryFlow(){
   const count=db.sales.length;
   if(!count){ alert('No hay historial de ventas guardado en este dispositivo.'); return; }
@@ -6710,7 +6741,7 @@ function renderCajaMovimientos(){
         </div>
         <div style="flex:1;min-width:160px">
           <label>Descripción</label>
-          <input type="text" id="movDesc" placeholder="Ej: Compra de productos, cambio billete..." style="width:100%">
+          <input type="text" id="movDesc" placeholder="Ej: Compra de productos, cambio billete..." style="width:100%" autocomplete="off">
         </div>
         <div style="align-self:flex-end">
           <button class="btn-primary" id="addMovBtn">+ Registrar</button>
@@ -6780,7 +6811,7 @@ function renderCajaCierre(){
         </div>
         <div class="cierre-field">
           <label>Observaciones</label>
-          <input type="text" id="cierreObs" placeholder="Opcional...">
+          <input type="text" id="cierreObs" placeholder="Opcional..." autocomplete="off">
         </div>
       </div>
       <div class="caja-diff neu" id="cierreDiff">Ingresa el efectivo contado para ver la diferencia</div>
@@ -7817,6 +7848,7 @@ $('settingsImportBtn').addEventListener('click',()=>{ closeModal('settingsModal'
 $('importFileInput').addEventListener('change',e=>importData(e.target.files[0]));
 $('settingsCloudBtn').addEventListener('click',()=>{ closeModal('settingsModal'); openSupabaseModal(); });
 $('settingsClearHistoryBtn').addEventListener('click',clearLocalHistoryFlow);
+$('settingsUpdateBtn')?.addEventListener('click',forceAppUpdate);
 $('sbSaveBtn').addEventListener('click',saveSupabaseFromModal);
 $('sbPushBtn').addEventListener('click',()=>pushSupabaseNow(false));
 $('sbPullBtn').addEventListener('click',pullSupabaseNow);
