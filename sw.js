@@ -1,4 +1,4 @@
-const CACHE_NAME = 'salon-brigida-pos-index-23-final-1';
+const CACHE_NAME = 'salon-brigida-pos-index-24-final-1';
 const APP_SHELL = [
   './',
   './index.html',
