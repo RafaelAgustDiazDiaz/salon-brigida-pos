@@ -1,4 +1,4 @@
-const CACHE_NAME = 'salon-brigida-pos-v10-21-cloud-indicator-1';
+const CACHE_NAME = 'salon-brigida-pos-index-22-final-1';
 const APP_SHELL = [
   './',
   './index.html',

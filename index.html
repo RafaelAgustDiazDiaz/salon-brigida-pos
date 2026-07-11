@@ -308,67 +308,6 @@ body {
 .sb-cloud-dot.ok { background: var(--green); box-shadow: 0 0 0 3px var(--green-bg); }
 .sb-cloud-dot.warn { background: var(--yellow); box-shadow: 0 0 0 3px var(--yellow-bg); }
 .sb-cloud-dot.err { background: var(--red); box-shadow: 0 0 0 3px var(--red-bg); }
-.cloud-indicator {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 11px;
-  margin: 10px 0;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  color: var(--text-2);
-  font-family: var(--font-ui);
-  text-align: left;
-  cursor: pointer;
-  transition: all var(--t);
-}
-.cloud-indicator:hover { border-color: var(--rose-border); background: var(--rose-light); }
-.cloud-indicator-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--text-4);
-  box-shadow: 0 0 0 4px rgba(140, 126, 136, .12);
-  flex-shrink: 0;
-}
-.cloud-indicator-copy { min-width: 0; flex: 1; }
-.cloud-indicator-title {
-  display: block;
-  font-size: 12px;
-  font-weight: 900;
-  color: var(--text);
-  line-height: 1.1;
-}
-.cloud-indicator-sub {
-  display: block;
-  margin-top: 2px;
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--text-4);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.cloud-indicator.ok {
-  border-color: var(--green-border);
-  background: var(--green-bg);
-}
-.cloud-indicator.ok .cloud-indicator-dot { background: var(--green); box-shadow: 0 0 0 4px var(--green-bg); }
-.cloud-indicator.ok .cloud-indicator-title { color: var(--green); }
-.cloud-indicator.warn {
-  border-color: var(--yellow-border);
-  background: var(--yellow-bg);
-}
-.cloud-indicator.warn .cloud-indicator-dot { background: var(--yellow); box-shadow: 0 0 0 4px var(--yellow-bg); }
-.cloud-indicator.warn .cloud-indicator-title { color: var(--yellow); }
-.cloud-indicator.err {
-  border-color: var(--red-border);
-  background: var(--red-bg);
-}
-.cloud-indicator.err .cloud-indicator-dot { background: var(--red); box-shadow: 0 0 0 4px var(--red-bg); }
-.cloud-indicator.err .cloud-indicator-title { color: var(--red); }
 .sb-save  {
   display: none;
   font-size: 10px; color: var(--green);
@@ -3669,13 +3608,6 @@ body {
     <div class="sb-clock" id="clockEl"></div>
     <div class="sb-date"  id="dateEl"></div>
     <input type="file" id="importFileInput" accept=".json" style="display:none">
-    <button type="button" class="cloud-indicator" id="sidebarCloudIndicator" title="Abrir nube">
-      <span class="cloud-indicator-dot" id="sidebarCloudDot"></span>
-      <span class="cloud-indicator-copy">
-        <span class="cloud-indicator-title" id="sidebarCloudTitle">Nube sin conectar</span>
-        <span class="cloud-indicator-sub" id="sidebarCloudSub">Toca para configurar</span>
-      </span>
-    </button>
     <div class="sb-footer-row">
       <button class="sb-dark-btn" id="themeBtn"><span id="themeBtnIcon" class="theme-btn-icon"></span><span id="themeBtnLabel">Modo oscuro</span></button>
       <button class="sb-gear-btn" id="settingsBtn" title="Ajustes">
@@ -5765,30 +5697,11 @@ function getSupabaseConfig(){
   try{return JSON.parse(localStorage.getItem(SK_SUPABASE)||'{}');}catch(e){return {};}
 }
 function saveSupabaseConfig(cfg){ localStorage.setItem(SK_SUPABASE, JSON.stringify(cfg)); }
-function updateSidebarCloudIndicator(title, sub, tone){
-  const card=$('sidebarCloudIndicator'), t=$('sidebarCloudTitle'), s=$('sidebarCloudSub');
-  if(!card||!t||!s)return;
-  card.className='cloud-indicator'+(tone?' '+tone:'');
-  t.textContent=title||'Nube sin conectar';
-  s.textContent=sub||'Toca para configurar';
-}
 function setCloudStatus(msg, tone){
-  const el=$('cloudStatus');
-  if(el){ el.textContent=msg; el.className='cloud-status'+(tone?' '+tone:''); }
+  const el=$('cloudStatus'); if(!el)return;
+  el.textContent=msg; el.className='cloud-status'+(tone?' '+tone:'');
   const dot=$('sbCloudDot');
   if(dot) dot.className='sb-cloud-dot'+(tone?' '+tone:'');
-  const cleanMsg=String(msg||'').replace(/\s+/g,' ').trim();
-  if(tone==='ok'){
-    const isTables=cleanMsg.toLowerCase().includes('tablas');
-    updateSidebarCloudIndicator(isTables?'Nube y tablas OK':'Nube conectada', cleanMsg, 'ok');
-  } else if(tone==='warn'){
-    updateSidebarCloudIndicator('Nube revisando', cleanMsg, 'warn');
-  } else if(tone==='err'){
-    updateSidebarCloudIndicator('Nube con error', cleanMsg, 'err');
-  } else {
-    const cfg=getSupabaseConfig();
-    updateSidebarCloudIndicator(cfg.url?'Nube configurada':'Nube sin conectar', cfg.url?'Falta iniciar sesion o subir datos':'Toca para configurar', cfg.url?'warn':'');
-  }
 }
 function loadExternalScript(src){
   return new Promise((resolve,reject)=>{
@@ -5823,14 +5736,6 @@ function updateCloudSessionUI(){
   const email=sbSession?.user?.email;
   el.textContent=email?'Usuario: '+email:'Usuario: sin iniciar sesión';
   el.className='cloud-session'+(email?' ok':'');
-  const cfg=getSupabaseConfig();
-  if(cfg.url && email){
-    updateSidebarCloudIndicator('Nube conectada', 'Sesion activa: '+email, 'ok');
-  } else if(cfg.url){
-    updateSidebarCloudIndicator('Nube configurada', 'Falta iniciar sesion', 'warn');
-  } else {
-    updateSidebarCloudIndicator('Nube sin conectar', 'Toca para configurar', '');
-  }
 }
 async function requireSupabaseSession(){
   const cfg=getSupabaseConfig();
@@ -7634,7 +7539,6 @@ $('settingsExportBtn').addEventListener('click',()=>{ exportData(); closeModal('
 $('settingsImportBtn').addEventListener('click',()=>{ closeModal('settingsModal'); $('importFileInput').click(); });
 $('importFileInput').addEventListener('change',e=>importData(e.target.files[0]));
 $('settingsCloudBtn').addEventListener('click',()=>{ closeModal('settingsModal'); openSupabaseModal(); });
-$('sidebarCloudIndicator')?.addEventListener('click',openSupabaseModal);
 $('settingsClearHistoryBtn').addEventListener('click',clearLocalHistoryFlow);
 $('sbSaveBtn').addEventListener('click',saveSupabaseFromModal);
 $('sbPushBtn').addEventListener('click',()=>pushSupabaseNow(false));
@@ -7655,7 +7559,6 @@ updateClock();setInterval(updateClock,30000);
 loadDB();loadCaja();loadCajaHistorial();updateCajaBadge();updateReceivablesBadge();
 loadTurns();
 initTheme();checkBackup();autoLoginSupabase();
-setCloudStatus('', '');
 refreshSupabaseSession();
 // Start on requested page
 showPage(location.hash.slice(1)||'turnero',{skipHash:true});
@@ -7721,3 +7624,4 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 </script>
 </body>
 </html>
+
