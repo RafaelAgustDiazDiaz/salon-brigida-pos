@@ -2228,6 +2228,114 @@ body {
   padding: 14px;
   gap: 12px;
 }
+.col-done .kanban-cards {
+  gap: 10px;
+  padding: 14px;
+}
+.col-done .turn-card.status-done {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 11px 12px;
+  border-top: 0;
+  border-left: 4px solid var(--green);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  overflow: visible;
+}
+.col-done .turn-card.status-done .tc-hdr {
+  display: contents;
+}
+.col-done .turn-card.status-done .tc-tooltip-wrap {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+.col-done .turn-card.status-done .tc-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+  box-shadow: none;
+}
+.col-done .turn-card.status-done .tc-info {
+  grid-column: 2;
+  min-width: 0;
+}
+.col-done .turn-card.status-done .tc-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.col-done .turn-card.status-done .tc-time {
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+.col-done .turn-card.status-done .tc-menu-btn {
+  justify-self: end;
+  align-self: center;
+}
+.col-done .turn-card.status-done .tc-menu-btn[data-action="edit"] {
+  display: none;
+}
+.col-done .turn-card.status-done .tc-services {
+  grid-column: 2 / 4;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+}
+.col-done .turn-card.status-done .tc-svc-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  min-height: 24px;
+  padding: 3px 8px;
+  border: 1px solid var(--green-border);
+  border-radius: 999px;
+  background: var(--green-bg);
+}
+.col-done .turn-card.status-done .tc-svc-name {
+  max-width: 150px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+}
+.col-done .turn-card.status-done .tc-svc-row span:last-child {
+  color: var(--green) !important;
+  font-size: 11px !important;
+}
+.col-done .turn-card.status-done .tc-footer {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.col-done .turn-card.status-done .tc-footer > div:first-child {
+  display: none;
+}
+.col-done .turn-card.status-done .tc-cobrar-btn {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: var(--r-sm);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, .22);
+}
 .turn-empty-state {
   min-height: 0;
   margin: 0;
@@ -7624,4 +7732,3 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 </script>
 </body>
 </html>
-
