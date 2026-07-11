@@ -250,6 +250,7 @@ body {
   background: var(--surface-2); border: 1px solid var(--border-strong);
   border-radius: var(--r-sm); color: var(--text); outline: none;
   transition: border-color var(--t);
+  -webkit-text-security: disc; text-security: disc;
 }
 .pin-modal-input:focus { border-color: var(--rose); }
 .price-edit-item-current { display: flex; justify-content: space-between; align-items: baseline; }
@@ -4544,7 +4545,7 @@ body {
     <div class="modal-title" id="pinModalTitle">PIN de encargado</div>
     <div class="pin-modal-msg" id="pinModalMsg">Ingresa el PIN de encargado para continuar.</div>
     <div class="field">
-      <input type="password" inputmode="numeric" id="pinModalInput" placeholder="••••" class="pin-modal-input" autocomplete="off">
+      <input type="text" inputmode="numeric" id="pinModalInput" placeholder="••••" class="pin-modal-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" name="sb-pin-code-nf">
     </div>
     <div class="modal-actions">
       <button class="m-cancel" id="pinModalCancelBtn">Cancelar</button>
@@ -6994,7 +6995,24 @@ const SK_TURN_SEQ = 'salon_brigida_turn_seq'; // {date, seq}
 function loadTurns(){
   try{ const r=localStorage.getItem(SK_TURNS); turns=r?JSON.parse(r):[]; }
   catch(e){ turns=[]; }
-  // No auto-clean — turns persist until manually deleted
+  // Defensa: normaliza turnos con forma inesperada (de versiones viejas o datos corruptos)
+  // para que un solo turno mal formado no rompa el render de toda la columna.
+  turns=turns.filter(t=>t&&typeof t==='object'&&t.id).map(t=>({
+    ...t,
+    name: t.name||'Sin nombre',
+    services: Array.isArray(t.services)?t.services:[],
+    status: ['waiting','active','done'].includes(t.status)?t.status:'waiting',
+    created: t.created||new Date().toISOString(),
+  }));
+  // Archiva (marca como "listo") cualquier turno de "en cola"/"atendiendo" que quedó
+  // abierto de un día anterior — así no se acumulan para siempre y las columnas se
+  // mantienen enfocadas en el día de hoy.
+  const today=new Date().toDateString();
+  turns.forEach(t=>{
+    if((t.status==='waiting'||t.status==='active')&&new Date(t.created).toDateString()!==today){
+      t.status='done'; t.updated=new Date().toISOString(); t.autoArchived=true;
+    }
+  });
   _persistTurns();
 }
 function _persistTurns(){ localStorage.setItem(SK_TURNS, JSON.stringify(turns)); queueSupabaseSync(); }
@@ -7027,9 +7045,9 @@ function _doneLabel(t){
 }
 
 function renderTurnero(){
-  const waiting=turns.filter(t=>t.status==='waiting').sort((a,b)=>new Date(a.created)-new Date(b.created));
-  const active =turns.filter(t=>t.status==='active').sort((a,b)=>new Date(a.created)-new Date(b.created));
   const today  =new Date().toDateString();
+  const waiting=turns.filter(t=>t.status==='waiting'&&new Date(t.created).toDateString()===today).sort((a,b)=>new Date(a.created)-new Date(b.created));
+  const active =turns.filter(t=>t.status==='active'&&new Date(t.created).toDateString()===today).sort((a,b)=>new Date(a.created)-new Date(b.created));
   const done   =turns.filter(t=>t.status==='done'&&new Date(t.created).toDateString()===today)
                       .sort((a,b)=>new Date(b.updated||b.created)-new Date(a.updated||a.created));
   $('colCountWaiting').textContent=waiting.length;
@@ -7059,7 +7077,16 @@ function renderKanbanCol(colId, items, status){
     col.innerHTML=`<div class="kanban-empty"><div class="kanban-empty-icon">${c.icon}</div><div class="kanban-empty-text">${c.text}</div></div>`;
     return;
   }
-  col.innerHTML=items.map(t=>buildTurnCard(t,status)).join('');
+  const html=items.map(t=>{
+    try{ return buildTurnCard(t,status); }
+    catch(e){
+      console.error('No se pudo renderizar el turno', t&&t.id, e);
+      return `<div class="turn-card status-${status}" data-turnid="${t.id||''}"><div class="tc-hdr"><div class="tc-info"><div class="tc-name">${esc(t.name||'Turno con datos incompletos')}</div><div class="tc-time">No se pudo mostrar este turno correctamente</div></div>
+        <button class="tc-menu-btn" data-action="delete" data-turnid="${t.id||''}" title="Eliminar">✕</button>
+      </div></div>`;
+    }
+  }).join('');
+  col.innerHTML=html;
 }
 
 function buildTurnCard(t,status){
