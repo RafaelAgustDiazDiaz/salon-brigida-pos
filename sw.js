@@ -1,4 +1,4 @@
-const CACHE_NAME = 'salon-brigida-pos-index-22-turnos-listos-1';
+const CACHE_NAME = 'salon-brigida-pos-index-22-turnos-listos-2';
 const APP_SHELL = [
   './',
   './index.html',

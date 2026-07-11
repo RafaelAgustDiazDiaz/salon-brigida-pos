@@ -2572,6 +2572,131 @@ body {
   cursor: pointer; white-space: nowrap; box-shadow: 0 6px 14px rgba(22,163,74,.25);
 }
 .done-cobrar-btn:hover { opacity: .9; }
+
+/* Listos: fila estable para muchos turnos terminados */
+.done-turn-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--green-border) 80%, var(--border));
+  border-left: 4px solid var(--green);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 94%, var(--green-bg));
+  box-shadow: var(--shadow-xs);
+}
+.done-turn-row:hover { box-shadow: var(--shadow-sm); }
+.done-turn-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 900;
+}
+.done-turn-main { min-width: 0; display: grid; gap: 5px; }
+.done-turn-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+.done-turn-name {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.done-turn-num {
+  flex-shrink: 0;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--green-bg);
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 900;
+}
+.done-turn-time {
+  color: var(--text-4);
+  font-size: 11px;
+  font-weight: 700;
+}
+.done-turn-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
+.done-turn-pill {
+  max-width: 100%;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--green-border);
+  border-radius: 999px;
+  background: var(--green-bg);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+}
+.done-turn-pill span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.done-turn-pill span:last-child {
+  flex-shrink: 0;
+  opacity: .9;
+}
+.done-turn-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.done-turn-icon-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.done-turn-icon-btn:hover { border-color: var(--green-border); color: var(--green); }
+.done-turn-cobrar {
+  min-height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--green);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(22,163,74,.25);
+}
+.done-turn-cobrar:hover { opacity: .92; }
 @media (max-width: 760px) {
   .turn-flow { padding: 4px 12px 20px; gap: 16px; }
   .turn-empty-state { flex-direction: column; text-align: center; }
@@ -2580,6 +2705,8 @@ body {
   .now-card-actions button { flex: 1; }
   .queue-row { flex-wrap: wrap; }
   .queue-actions { width: 100%; justify-content: flex-end; margin-top: 6px; }
+  .done-turn-row { grid-template-columns: 40px minmax(0, 1fr); }
+  .done-turn-actions { grid-column: 1 / -1; justify-content: flex-end; }
 }
 
 /* ══ CAJA MEJORADA ══════════════════════════════════════ */
@@ -6907,6 +7034,10 @@ function _waitLabel(t){
   if(min<60) return min+' min esperando';
   return Math.floor(min/60)+'h '+(min%60)+'m esperando';
 }
+function _doneLabel(t){
+  const doneAt=new Date(t.updated||t.created);
+  return 'Listo ' + doneAt.toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+}
 
 function renderTurnero(){
   const waiting=turns.filter(t=>t.status==='waiting').sort((a,b)=>new Date(a.created)-new Date(b.created));
@@ -6948,6 +7079,7 @@ function buildTurnCard(t,status){
   const init=_initials(t.name);
   const waitStr=_waitLabel(t);
   const total=t.services.reduce((a,s)=>a+(parseFloat(s.price)||0),0);
+  if(status==='done') return buildDoneTurnRow(t, init, total);
   const svcsHTML=t.services.length
     ? t.services.map(s=>`<div class="tc-svc-row">
         <span class="tc-svc-name">${esc(s.name)}</span>
@@ -6986,6 +7118,27 @@ function buildTurnCard(t,status){
         <div class="tc-total tc-total-${t.id}">${fmt(total)}</div>
       </div>
       ${actionsHTML}
+    </div>
+  </div>`;
+}
+
+function buildDoneTurnRow(t, init, total){
+  const svcs=t.services.length
+    ? t.services.map(s=>`<span class="done-turn-pill"><span>${esc(s.name)}</span><span>${fmt(s.price)}</span></span>`).join('')
+    : '<span class="done-turn-time">Sin servicios — agrega uno</span>';
+  return `<div class="done-turn-row status-done" data-turnid="${t.id}">
+    <div class="done-turn-avatar">${init}</div>
+    <div class="done-turn-main">
+      <div class="done-turn-top">
+        <div class="done-turn-name">${esc(t.name)}</div>
+        ${t.num?`<span class="done-turn-num">#${t.num}</span>`:''}
+      </div>
+      <div class="done-turn-time">${_doneLabel(t)} · Total ${fmt(total)}</div>
+      <div class="done-turn-services">${svcs}</div>
+    </div>
+    <div class="done-turn-actions">
+      <button class="done-turn-icon-btn" data-action="print" data-turnid="${t.id}" title="Imprimir"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+      <button class="done-turn-cobrar" data-action="cobrar" data-turnid="${t.id}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg> Cobrar</button>
     </div>
   </div>`;
 }
